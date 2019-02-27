@@ -1,12 +1,14 @@
-import rl_environment
+from environments.rl_environment import RlEnvironment
+import gym
+
 
 class Gym(RlEnvironment):
-    __init__(self):
+    def __init__(self):
         super(Gym, self).__init__()
 
 
 class Cartpole(Gym):
-    __init__(self):
+    def __init__(self):
         super(Cartpole, self).__init__()
         self._env = gym.make('CartPole-v0')
 

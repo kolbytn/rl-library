@@ -1,9 +1,9 @@
 class RlEnvironment:
-    __init__(self):
+    def __init__(self):
         pass
 
-    step(self, action):
+    def step(self, action):
         pass
 
-    reset(self):
+    def reset(self):
         pass
