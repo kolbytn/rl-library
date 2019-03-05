@@ -7,9 +7,9 @@ import torch
 import numpy as np
 
 
-class Ppo(RlAlgorithm):
+class Ppo:
     def __init__(self):
-        super(Ppo, self).__init__()
+        pass
 
     def train(self, env, policy, value, optim, value_objective, epochs, env_samples,
               episode_length, gamma, policy_epochs, batch_size, epsilon,
