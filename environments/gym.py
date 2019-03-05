@@ -12,10 +12,10 @@ class Cartpole(Gym):
         super(Cartpole, self).__init__()
         self._env = gym.make('CartPole-v0')
         self.action_dim = 2
-        self.state_dim = 2
+        self.state_dim = 4
 
     def step(self, action):
-        s, r, t, _ = self._env.step(action.item())
+        s, r, t, _ = self._env.step(action)
         return s, r, t
 
     def reset(self):

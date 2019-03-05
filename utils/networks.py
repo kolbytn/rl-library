@@ -7,9 +7,10 @@ class MLP(nn.Module):
         self.input_size = input_size
         self.output_size = output_size
 
-        layers = [nn.Linear(input_size, hidden_size), nn.ReLU]
+        layers = [nn.Linear(input_size, hidden_size), nn.ReLU()]
         for _ in range(hidden_layers):
-            layers.append([nn.Linear(hidden_size, hidden_size), nn.ReLU])
+            layers.append(nn.Linear(hidden_size, hidden_size))
+            layers.append(nn.ReLU())
         layers.append(nn.Linear(hidden_size, output_size))
 
         self.net = nn.Sequential(*layers)

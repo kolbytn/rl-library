@@ -11,9 +11,8 @@ from itertools import chain
 def cartpole_dqn():
     env = Cartpole()
     value = MLP(env.state_dim, env.action_dim, hidden_size=10)
-    experience = RandomReplay(100000, ('state', 'action_data', 'action', 'reward'))
 
-    dqn = Dqn(env, value, experience, experiment_name='cartpole_dqn')
+    dqn = Dqn(env, value, experiment_name='cartpole_dqn')
     result_data = dqn.train(1000)
 
     return result_data

@@ -2,6 +2,7 @@ from torch.utils.data import Dataset
 import numpy as np
 import random
 from collections import deque
+from copy import deepcopy
 
 
 class ReplayBuffer:
@@ -22,17 +23,16 @@ class RandomReplay(ReplayBuffer):
         self.keys = keys
 
     def extend(self, rollouts):
-        if not isinstance(rollouts[0], list):
-            rollouts = [rollouts]
-
         for rollout in rollouts:
-            for step in rollout:
-                self.experience.extend(step)
+            self.experience.extend(rollout)
 
     def sample(self, n):
         sample = []
-        exp = random.shuffle(self.experience)
+        exp = deepcopy(self.experience)
+        random.shuffle(exp)
         for i in range(n):
+            if len(exp) < 1:
+                break
             data = exp.pop()
             sample.append(data)
         return ExperienceDataset(sample, self.keys)
@@ -90,18 +90,17 @@ class PpoDataset(Dataset):
 class ExperienceDataset(Dataset):
     def __init__(self, experience, keys):
         super(ExperienceDataset, self).__init__()
+        self._keys = keys
         self._exp = []
         for x in experience:
-            self._exp.extend(x)
-        self._length = len(self._exp)
-        self._keys = keys
+            self._exp.append(x)
 
     def __getitem__(self, index):
         chosen_exp = self._exp[index]
         return tuple(chosen_exp[k] for k in self._keys)
 
     def __len__(self):
-        return self._length
+        return len(self._exp)
 
 
 class SumTree:
