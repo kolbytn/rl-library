@@ -1,10 +1,10 @@
-from experiments.cartpole import train_cartpole
-from helpers.functions import graph
+from experiments.cartpole import cartpole_dqn
+from utils.functions import graph
 
 
 def main():
-    returns = train_cartpole()
-    graph(returns)
+    data = cartpole_dqn()
+    graph(data)
 
 
 if __name__ == "__main__":

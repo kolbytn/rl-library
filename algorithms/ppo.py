@@ -1,6 +1,6 @@
 from algorithms.rl_algorithm import RlAlgorithm
-from helpers.functions import calculate_returns
-from helpers.dataset import PpoDataset
+from utils.functions import calculate_returns
+from utils.dataset import PpoDataset
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 import torch

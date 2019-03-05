@@ -1,12 +1,25 @@
 from environments.gym import Cartpole
-from helpers.networks import PolicyNetwork, ValueNetwork
+from utils.networks import PolicyNetwork, ValueNetwork, MLP
 from algorithms.ppo import Ppo
+from algorithms.dqn import Dqn
+from utils.dataset import RandomReplay
 import torch
 import torch.nn as nn
 from itertools import chain
 
 
-def train_cartpole():
+def cartpole_dqn():
+    env = Cartpole()
+    value = MLP(env.state_dim, env.action_dim, hidden_size=10)
+    experience = RandomReplay(100000, ('state', 'action_data', 'action', 'reward'))
+
+    dqn = Dqn(env, value, experience, experiment_name='cartpole_dqn')
+    result_data = dqn.train(1000)
+
+    return result_data
+
+
+def cartpole_ppo():
     env = Cartpole()
     policy = PolicyNetwork(4, 2)
     value = ValueNetwork(4)

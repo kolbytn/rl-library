@@ -1,6 +1,23 @@
 import torch.nn as nn
 
 
+class MLP(nn.Module):
+    def __init__(self, input_size, output_size, hidden_size=100, hidden_layers=2):
+        super(MLP, self).__init__()
+        self.input_size = input_size
+        self.output_size = output_size
+
+        layers = [nn.Linear(input_size, hidden_size), nn.ReLU]
+        for _ in range(hidden_layers):
+            layers.append([nn.Linear(hidden_size, hidden_size), nn.ReLU])
+        layers.append(nn.Linear(hidden_size, output_size))
+
+        self.net = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.net(x)
+
+
 class PolicyNetwork(nn.Module):
   def __init__(self, state_size=4, action_size=2):
     super(PolicyNetwork, self).__init__()
