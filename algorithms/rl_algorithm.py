@@ -29,6 +29,7 @@ class RlAlgorithm:
                 s_prime, r, t = self._env.step(a)
 
                 rollout.append({'state': state,
+                                'state_prime': s_prime,
                                 'action': a,
                                 'action_data': a_data.cpu().detach().numpy(),
                                 'reward': r,
