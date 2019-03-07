@@ -32,11 +32,11 @@ class Dqn(RlAlgorithm):
             params = chain(params, self._embedding_net.parameters())
 
         self._optim = optim.Adam(params, lr=lr, betas=betas, weight_decay=weight_decay)
-        self._crit = nn.MSELoss()
+        self._crit = nn.functional.smooth_l1_loss
 
         self._experience = RandomReplay(replay_capacity, ('state', 'state_prime', 'action', 'reward'))
 
-    def train(self, epochs, num_rollouts=50, num_samples=100000, batch_size=128, target_update=10):
+    def train(self, epochs, num_rollouts=50, num_samples=10000, batch_size=128, target_update=10):
         loop = tqdm(total=epochs, position=0, leave=False)
         for epoch in range(epochs):
             avg_reward = self.run_env(num_rollouts)
@@ -50,10 +50,10 @@ class Dqn(RlAlgorithm):
                 reward = self._prepare_tensor(reward)
 
                 self._optim.zero_grad()
-                values = self._value_net(state)[0][:, action].diagonal()
+                values = self._value_net(state).squeeze(0).gather(1, action.unsqueeze(1)).squeeze(1)
                 target = torch.max(self._target_net(state_prime)[0], 1)[0]
                 target = reward + self.gamma * target
-                loss = torch.mean(self._crit(target, values))
+                loss = torch.mean(self._crit(target.squeeze(0), values))
                 loss.backward()
                 self._optim.step()
 

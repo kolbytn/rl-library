@@ -28,13 +28,10 @@ class RandomReplay(ReplayBuffer):
 
     def sample(self, n):
         sample = []
-        exp = deepcopy(self.experience)
-        random.shuffle(exp)
-        for i in range(n):
-            if len(exp) < 1:
-                break
-            data = exp.pop()
-            sample.append(data)
+        if len(self.experience) >= n:
+            sample = random.sample(self.experience, n)
+        else:
+            sample = self.experience
         return ExperienceDataset(sample, self.keys)
 
 

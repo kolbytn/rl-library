@@ -10,7 +10,7 @@ from itertools import chain
 
 def cartpole_dqn():
     env = Cartpole()
-    value = MLP(env.state_dim, env.action_dim, hidden_size=10)
+    value = MLP(env.state_dim, env.action_dim, hidden_size=6, hidden_layers=1)
 
     dqn = Dqn(env, value, experiment_name='cartpole_dqn')
     result_data = dqn.train(1000)

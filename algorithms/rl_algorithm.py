@@ -22,7 +22,7 @@ class RlAlgorithm:
             state = self._env.reset()
             episode_reward = 0
 
-            for _ in range(self.episode_len):
+            for i in range(self.episode_len):
                 s = self._prepare_tensor(state)
 
                 a_data, a = self._policy(s)
