@@ -20,3 +20,6 @@ class Cartpole(Gym):
 
     def reset(self):
         return self._env.reset()
+
+    def render(self):
+        self._env.render()

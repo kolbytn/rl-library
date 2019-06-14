@@ -1,9 +1,9 @@
-from experiments.cartpole import cartpole_dqn
+from experiments.cartpole import cartpole_ppo
 from utils.functions import graph
 
 
 def main():
-    data = cartpole_dqn()
+    data = cartpole_ppo()
     graph(data)
 
 

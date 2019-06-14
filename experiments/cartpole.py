@@ -20,14 +20,15 @@ def cartpole_dqn():
 
 def cartpole_ppo():
     env = Cartpole()
-    policy = PolicyNetwork(4, 2)
-    value = ValueNetwork(4)
+    device = "cuda"
+    policy = PolicyNetwork(4, 2).to(device)
+    value = ValueNetwork(4).to(device)
 
     optim = torch.optim.Adam(chain(policy.parameters(), value.parameters()), lr=1e-3, betas=(0.9, 0.999))
     value_objective = nn.MSELoss()
 
     # Hyperparameters
-    epochs = 1
+    epochs = 1000
     env_samples = 100
     episode_length = 200
     gamma = 0.9
@@ -40,6 +41,6 @@ def cartpole_ppo():
     ppo = Ppo()
     returns = ppo.train(env, policy, value, optim, value_objective, epochs, env_samples,
                      episode_length, gamma, policy_epochs, batch_size, epsilon,
-                     c_value, c_policy)
+                     c_value, c_policy, device)
 
     return returns

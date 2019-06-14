@@ -13,7 +13,7 @@ class Ppo:
 
     def train(self, env, policy, value, optim, value_objective, epochs, env_samples,
               episode_length, gamma, policy_epochs, batch_size, epsilon,
-              c_value, c_policy):
+              c_value, c_policy, device):
         returns = []
         loop = tqdm(total=epochs, position=0, leave=False)
         for epoch in range(epochs):
@@ -29,11 +29,12 @@ class Ppo:
 
                 for step in range(1, episode_length + 1):
                     step = {}
-                    state_torch = torch.FloatTensor(state).unsqueeze(0)
+                    state_torch = torch.FloatTensor(state).unsqueeze(0).to(device)
                     action_dist = policy(state_torch)
-                    action_dist = action_dist[0].detach().numpy()
+                    action_dist = action_dist[0].cpu().detach().numpy()
                     action = np.argmax(np.random.multinomial(1, action_dist))
                     state_p, r, done = env.step(action)
+                    # env.render()
 
                     step["state"] = state
                     step["reward"] = r
@@ -63,8 +64,8 @@ class Ppo:
                 for step in loader:
                     optim.zero_grad()
 
-                    state = step["state"].float()
-                    ret = step["return"].float().unsqueeze(1)
+                    state = step["state"].float().to(device)
+                    ret = step["return"].float().unsqueeze(1).to(device)
                     est_return = value(state)
                     advantage = ret - est_return
                     value_loss = c_value * value_objective(est_return, ret)
@@ -72,9 +73,9 @@ class Ppo:
                     advantage.detach_()
                     action_dist = policy(state)
                     cur = action_dist[range(action_dist.shape[0]),
-                                            step["action"]].unsqueeze(1)
+                                            step["action"]].unsqueeze(1).to(device)
                     old = step["action_dist"][range(
-                        step["action_dist"].shape[0]), step["action"]].unsqueeze(1)
+                        step["action_dist"].shape[0]), step["action"]].unsqueeze(1).to(device)
                     ratio = cur / old
                     left = ratio * advantage
                     right = torch.clamp(ratio, 1 - epsilon, 1 + epsilon) * advantage
